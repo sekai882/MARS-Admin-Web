@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: html(content=~{::section})}">
+<body>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Listado de Clubes</h2>
+        <a th:href="@{/clubs/nuevo}" class="btn btn-primary">Nuevo Club</a>
+    </div>
+
+    <div class="card p-4">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Presupuesto</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="club : ${clubs}">
+                    <td th:text="${club.id}"></td>
+                    <td th:text="${club.nombreClub}"></td>
+                    <td th:text="${#numbers.formatCurrency(club.presupuesto)}"></td>
+                    <td>
+                        <a th:href="@{/clubs/editar/{id}(id=${club.id})}" class="btn btn-sm btn-warning">Editar</a>
+                        <a th:href="@{/clubs/eliminar/{id}(id=${club.id})}" class="btn btn-sm btn-danger" 
+                           onclick="return confirm('¿Está seguro?')">Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

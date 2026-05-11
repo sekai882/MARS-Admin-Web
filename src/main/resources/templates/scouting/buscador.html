@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: html(content=~{::section})}">
+<body>
+<section>
+    <div class="card p-4">
+        <h2>Buscador de Scouting</h2>
+        <p class="text-muted">Seleccione un estilo de juego para filtrar los jugadores disponibles.</p>
+        <hr>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Estilo de Juego</label>
+                <select id="estiloDropdown" class="form-select">
+                    <option value="">Seleccione un estilo...</option>
+                    <option th:each="estilo : ${estilos}" 
+                            th:value="${estilo.id}" 
+                            th:text="${estilo.nombreEstilo}"></option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Jugadores</label>
+                <select id="jugadorDropdown" class="form-select" disabled>
+                    <option value="">Esperando estilo...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="jugadorInfo" class="mt-4 d-none">
+            <div class="alert alert-info">
+                <h4 id="infoNombre"></h4>
+                <p><strong>Edad:</strong> <span id="infoEdad"></span></p>
+                <p><strong>Valor de Mercado:</strong> <span id="infoValor"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('estiloDropdown').addEventListener('change', function() {
+            const estiloId = this.value;
+            const jugadorDropdown = document.getElementById('jugadorDropdown');
+            const jugadorInfo = document.getElementById('jugadorInfo');
+
+            if (!estiloId) {
+                jugadorDropdown.innerHTML = '<option value="">Esperando estilo...</option>';
+                jugadorDropdown.disabled = true;
+                jugadorInfo.classList.add('d-none');
+                return;
+            }
+
+            fetch(`/scouting/api/jugadores/${estiloId}`)
+                .then(response => response.json())
+                .then(data => {
+                    jugadorDropdown.innerHTML = '<option value="">Seleccione un jugador...</option>';
+                    data.forEach(jugador => {
+                        const option = document.createElement('option');
+                        option.value = jugador.id;
+                        option.text = jugador.nombre;
+                        option.dataset.edad = jugador.edad;
+                        option.dataset.valor = jugador.valorMercado;
+                        jugadorDropdown.add(option);
+                    });
+                    jugadorDropdown.disabled = false;
+                });
+        });
+
+        document.getElementById('jugadorDropdown').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (this.value) {
+                document.getElementById('infoNombre').textContent = selectedOption.text;
+                document.getElementById('infoEdad').textContent = selectedOption.dataset.edad;
+                document.getElementById('infoValor').textContent = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(selectedOption.dataset.valor);
+                document.getElementById('jugadorInfo').classList.remove('d-none');
+            } else {
+                document.getElementById('jugadorInfo').classList.add('d-none');
+            }
+        });
+    </script>
+</section>
+</body>
+</html>
