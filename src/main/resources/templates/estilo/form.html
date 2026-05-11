@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: html(content=~{::section})}">
+<body>
+<section>
+    <div class="card p-4">
+        <h2 th:text="${estilo.id == null ? 'Nuevo Estilo de Juego' : 'Editar Estilo de Juego'}"></h2>
+        <hr>
+        <form th:action="@{/estilos/guardar}" th:object="${estilo}" method="post">
+            <input type="hidden" th:field="*{id}">
+            
+            <div class="mb-3">
+                <label class="form-label">Nombre del Estilo</label>
+                <input type="text" th:field="*{nombreEstilo}" class="form-control" placeholder="Ej. Posesión" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea th:field="*{descripcion}" class="form-control" rows="3" placeholder="Descripción táctica..."></textarea>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a th:href="@{/estilos}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>

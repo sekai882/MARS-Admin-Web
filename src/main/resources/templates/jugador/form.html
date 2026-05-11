@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: html(content=~{::section})}">
+<body>
+<section>
+    <div class="card p-4">
+        <h2 th:text="${jugador.id == null ? 'Nuevo Jugador' : 'Editar Jugador'}"></h2>
+        <hr>
+        <form th:action="@{/jugadores/guardar}" th:object="${jugador}" method="post">
+            <input type="hidden" th:field="*{id}">
+            
+            <div class="mb-3">
+                <label class="form-label">Nombre Completo</label>
+                <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej. Lamine Yamal" required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Edad</label>
+                    <input type="number" th:field="*{edad}" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Valor de Mercado (€)</label>
+                    <input type="number" th:field="*{valorMercado}" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Estilo de Juego</label>
+                <select th:field="*{estiloJuego}" class="form-select" required>
+                    <option value="">Seleccione un estilo...</option>
+                    <option th:each="estilo : ${estilos}" 
+                            th:value="${estilo.id}" 
+                            th:text="${estilo.nombreEstilo}"></option>
+                </select>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a th:href="@{/jugadores}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>
